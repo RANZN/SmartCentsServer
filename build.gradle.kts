@@ -16,7 +16,6 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.logback)
     implementation(libs.ktor.server.config.yaml)
-    implementation("io.ktor:ktor-server-config-yaml:3.3.0")
     implementation(libs.exposed.core)
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)

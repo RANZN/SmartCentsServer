@@ -8,7 +8,7 @@ WORKDIR /app
 # This is why this Dockerfile must be in the root.
 COPY gradlew .
 COPY gradle ./gradle
-COPY server/build.gradle.kts .
+COPY build.gradle.kts .
 COPY settings.gradle.kts .
 
 # Copy the source code for the server module.
