@@ -7,7 +7,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.net.URI
 
 object DbConfig {
     val DRIVER: String = System.getenv("DB_DRIVER") ?: "org.h2.Driver"
@@ -15,26 +14,11 @@ object DbConfig {
     val USER: String = System.getenv("DB_USER") ?: "root"
     val PASSWORD: String = System.getenv("DB_PASSWORD") ?: ""
 }
+// postgresql://smartcents_db_user:c9buJpPypGG0Uu9xFmO78gip3qSZCFTS@dpg-d34t9cu3jp1c73ejdql0-a/smartcents_db
 
 object DatabaseFactory {
     fun init() {
-        val driverClassName = DbConfig.DRIVER
-        var jdbcURL = DbConfig.URL
-        var user = DbConfig.USER
-        var dbPassword = DbConfig.PASSWORD
-
-        // This logic correctly handles converting Render's URL to the JDBC format.
-        // It now checks if the URL is the default H2 URL.
-        if (jdbcURL.startsWith("jdbc:h2:").not()) {
-            val dbUri = URI(jdbcURL)
-            val userInfo = dbUri.userInfo.split(":")
-            user = userInfo[0]
-            dbPassword = userInfo[1]
-            jdbcURL = "jdbc:postgresql://${dbUri.host}:${dbUri.port}${dbUri.path}"
-        }
-
-        // Connect to the database using the final, correct credentials
-        Database.connect(createHikariDataSource(jdbcURL, driverClassName, user, dbPassword))
+        Database.connect(createHikariDataSource(DbConfig.URL, DbConfig.DRIVER, DbConfig.USER, DbConfig.PASSWORD))
 
         // Create database tables
         transaction {
