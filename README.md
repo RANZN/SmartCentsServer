@@ -1,39 +1,111 @@
-# smartcents
+SmartCents Ktor Server API
+This repository contains the backend server for the SmartCents service, built with Ktor. It provides a RESTful API for user authentication, including user registration and login.
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+🚀 Deployment
+The service is continuously deployed and hosted on Render.
 
-Here are some useful links to get you started:
+Production Base URL: https://ranjan-smartcents.onrender.com
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+📌 API Endpoints
+All endpoints are relative to the base URL.
 
-## Features
+Authentication
+🔹 Sign Up a New User
+Creates a new user account in the database.
 
-Here's a list of features included in this project:
+Endpoint: POST /api/auth/signup
 
-| Name                                               | Description                                                 |
-| ----------------------------------------------------|------------------------------------------------------------- |
-| [Routing](https://start.ktor.io/p/routing-default) | Allows to define structured routes and associated handlers. |
+Request Body (application/json):
 
-## Building & Running
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "a-strong-password-123"
+}
 
-To build or run the project, use one of the following tasks:
+Success Response (201 Created):
 
-| Task                          | Description                                                          |
-| -------------------------------|---------------------------------------------------------------------- |
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "id": "c7a8b2f1-c3e4-4a56-b789-01d2e3f4a5b6",
+        "name": "John Doe",
+        "email": "john.doe@example.com"
+    }
+}
 
-If the server starts successfully, you'll see the following output:
+Curl Example:
 
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
-```
+curl -X POST [https://ranjan-smartcents.onrender.com/api/auth/signup](https://ranjan-smartcents.onrender.com/api/auth/signup) \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "a-strong-password-123"
+}'
 
+🔹 Log In an Existing User
+Authenticates a user and returns a JWT for accessing protected routes.
+
+Endpoint: POST /api/auth/login
+
+Request Body (application/json):
+
+{
+  "email": "john.doe@example.com",
+  "password": "a-strong-password-123"
+}
+
+Success Response (200 OK):
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "id": "c7a8b2f1-c3e4-4a56-b789-01d2e3f4a5b6",
+        "name": "John Doe",
+        "email": "john.doe@example.com"
+    }
+}
+
+Curl Example:
+
+curl -X POST [https://ranjan-smartcents.onrender.com/api/auth/login](https://ranjan-smartcents.onrender.com/api/auth/login) \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "john.doe@example.com",
+  "password": "a-strong-password-123"
+}'
+
+🛠️ Local Development
+To run the server on your local machine for development and testing, follow these steps.
+
+Clone the repository:
+
+git clone [https://github.com/your-username/smartcents-server.git](https://github.com/your-username/smartcents-server.git)
+cd smartcents-server
+
+Build and Run the Server:
+The project is configured to use a local H2 file-based database by default when no environment variables are set.
+
+./gradlew run
+
+Access the API Locally:
+The server will be available at http://localhost:8080.
+
+💻 Technology Stack
+Framework: Ktor
+
+Language: Kotlin
+
+Database: PostgreSQL (Production), H2 (Local)
+
+Database Library: Exposed
+
+Authentication: JWT
+
+Dependency Injection: Koin
+
+Build Tool: Gradle
+
+📄 License
+This project is licensed under the MIT License.
