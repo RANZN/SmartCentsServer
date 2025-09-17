@@ -1,32 +1,32 @@
-# Stage 1: Build the application using a JDK image
+# -------------------------------
+# Stage 1: Build the fat JAR
+# -------------------------------
 FROM eclipse-temurin:17-jdk-focal AS builder
 
-# Set the working directory to the root of the app
 WORKDIR /app
 
-# Copy the Gradle wrapper files
+# Copy Gradle wrapper & settings
 COPY gradlew .
 COPY gradle ./gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
 
-# Copy the application source code
+# Copy the source code
 COPY src ./src
 
-# Make the Gradle wrapper executable and build the "fat JAR"
-# This command compiles the code and packages it with all dependencies.
-RUN chmod +x ./gradlew && ./gradlew build shadowJar
+# Make wrapper executable & build shadow JAR
+RUN chmod +x ./gradlew && ./gradlew shadowJar --no-daemon
 
-# Stage 2: Create a minimal final image for running the application
-FROM eclipse-temurin:17-jre-focal
+# -------------------------------
+# Stage 2: Minimal runtime image
+# -------------------------------
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# Copy only the final "fat JAR" from the builder stage
-COPY --from=builder /app/build/libs/shadow.jar .
+# Copy only the shadow JAR, rename to app.jar
+COPY --from=builder /app/build/libs/*-all.jar app.jar
 
 EXPOSE 8080
 
-# The command to run the application when the container starts
-ENTRYPOINT ["java", "-jar", "shadow.jar"]
-
+ENTRYPOINT ["java", "-jar", "app.jar"]

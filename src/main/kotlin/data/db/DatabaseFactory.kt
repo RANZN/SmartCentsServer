@@ -2,7 +2,6 @@ package com.ranjan.data.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -18,7 +17,6 @@ object DbConfig {
 }
 
 object DatabaseFactory {
-    // The init function no longer needs the ApplicationConfig parameter.
     fun init() {
         val driverClassName = DbConfig.DRIVER
         var jdbcURL = DbConfig.URL
