@@ -1,111 +1,114 @@
-SmartCents Ktor Server API
-This repository contains the backend server for the SmartCents service, built with Ktor. It provides a RESTful API for user authentication, including user registration and login.
+# SmartCents Ktor Server API
 
-🚀 Deployment
+This repository contains the backend server for the **SmartCents** service, built with Ktor. It provides a RESTful API for user authentication, including user registration and login.
+
+## 🚀 Deployment
+
 The service is continuously deployed and hosted on Render.
 
-Production Base URL: https://ranjan-smartcents.onrender.com
+**Production Base URL:** `https://ranjan-smartcents.onrender.com`
 
-📌 API Endpoints
+## 📌 API Endpoints
+
 All endpoints are relative to the base URL.
 
-Authentication
-🔹 Sign Up a New User
+### Authentication
+
+#### 🔹 Sign Up a New User
+
 Creates a new user account in the database.
 
-Endpoint: POST /api/auth/signup
-
-Request Body (application/json):
-
-{
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "password": "a-strong-password-123"
-}
-
-Success Response (201 Created):
-
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-        "id": "c7a8b2f1-c3e4-4a56-b789-01d2e3f4a5b6",
-        "name": "John Doe",
-        "email": "john.doe@example.com"
+* **Endpoint:** `POST /api/auth/signup`
+* **Request Body (`application/json`):**
+    ```json
+    {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "a-strong-password-123"
     }
-}
+    ```
+* **Success Response (`201 Created`):**
+    ```json
+    {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "user": {
+            "id": "c7a8b2f1-c3e4-4a56-b789-01d2e3f4a5b6",
+            "name": "John Doe",
+            "email": "john.doe@example.com"
+        }
+    }
+    ```
+* **Curl Example:**
+    ```bash
+    curl -X POST [https://ranjan-smartcents.onrender.com/api/auth/signup](https://ranjan-smartcents.onrender.com/api/auth/signup) \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "a-strong-password-123"
+    }'
+    ```
 
-Curl Example:
+#### 🔹 Log In an Existing User
 
-curl -X POST [https://ranjan-smartcents.onrender.com/api/auth/signup](https://ranjan-smartcents.onrender.com/api/auth/signup) \
--H "Content-Type: application/json" \
--d '{
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "password": "a-strong-password-123"
-}'
-
-🔹 Log In an Existing User
 Authenticates a user and returns a JWT for accessing protected routes.
 
-Endpoint: POST /api/auth/login
-
-Request Body (application/json):
-
-{
-  "email": "john.doe@example.com",
-  "password": "a-strong-password-123"
-}
-
-Success Response (200 OK):
-
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-        "id": "c7a8b2f1-c3e4-4a56-b789-01d2e3f4a5b6",
-        "name": "John Doe",
-        "email": "john.doe@example.com"
+* **Endpoint:** `POST /api/auth/login`
+* **Request Body (`application/json`):**
+    ```json
+    {
+      "email": "john.doe@example.com",
+      "password": "a-strong-password-123"
     }
-}
+    ```
+* **Success Response (`200 OK`):**
+    ```json
+    {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "user": {
+            "id": "c7a8b2f1-c3e4-4a56-b789-01d2e3f4a5b6",
+            "name": "John Doe",
+            "email": "john.doe@example.com"
+        }
+    }
+    ```
+* **Curl Example:**
+    ```bash
+    curl -X POST [https://ranjan-smartcents.onrender.com/api/auth/login](https://ranjan-smartcents.onrender.com/api/auth/login) \
+    -H "Content-Type: application/json" \
+    -d '{
+      "email": "john.doe@example.com",
+      "password": "a-strong-password-123"
+    }'
+    ```
 
-Curl Example:
+## 🛠️ Local Development
 
-curl -X POST [https://ranjan-smartcents.onrender.com/api/auth/login](https://ranjan-smartcents.onrender.com/api/auth/login) \
--H "Content-Type: application/json" \
--d '{
-  "email": "john.doe@example.com",
-  "password": "a-strong-password-123"
-}'
-
-🛠️ Local Development
 To run the server on your local machine for development and testing, follow these steps.
 
-Clone the repository:
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/RANZN/SmartCentsServer.git](https://github.com/RANZN/SmartCentsServer.git)
+    cd smartcents-server
+    ```
+2.  **Build and Run the Server:**
+    The project is configured to use a local H2 file-based database by default when no environment variables are set.
+    ```bash
+    ./gradlew run
+    ```
+3.  **Access the API Locally:**
+    The server will be available at `http://localhost:8080`.
 
-git clone [https://github.com/your-username/smartcents-server.git](https://github.com/your-username/smartcents-server.git)
-cd smartcents-server
+## 💻 Technology Stack
 
-Build and Run the Server:
-The project is configured to use a local H2 file-based database by default when no environment variables are set.
+* **Framework:** Ktor
+* **Language:** Kotlin
+* **Database:** PostgreSQL (Production), H2 (Local)
+* **Database Library:** Exposed
+* **Authentication:** JWT
+* **Dependency Injection:** Koin
+* **Build Tool:** Gradle
 
-./gradlew run
+## 📄 License
 
-Access the API Locally:
-The server will be available at http://localhost:8080.
-
-💻 Technology Stack
-Framework: Ktor
-
-Language: Kotlin
-
-Database: PostgreSQL (Production), H2 (Local)
-
-Database Library: Exposed
-
-Authentication: JWT
-
-Dependency Injection: Koin
-
-Build Tool: Gradle
-
-📄 License
 This project is licensed under the MIT License.
