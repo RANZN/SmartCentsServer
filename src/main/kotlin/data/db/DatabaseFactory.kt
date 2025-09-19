@@ -14,7 +14,6 @@ object DbConfig {
     val USER: String = System.getenv("DB_USER") ?: "root"
     val PASSWORD: String = System.getenv("DB_PASSWORD") ?: ""
 }
-// postgresql://smartcents_db_user:c9buJpPypGG0Uu9xFmO78gip3qSZCFTS@dpg-d34t9cu3jp1c73ejdql0-a/smartcents_db
 
 object DatabaseFactory {
     fun init() {

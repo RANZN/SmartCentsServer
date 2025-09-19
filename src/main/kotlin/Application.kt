@@ -2,6 +2,7 @@ package com.ranjan
 
 import com.ranjan.application.auth.authRoutes
 import com.ranjan.application.checkHealth
+import com.ranjan.application.update.checkUpdateRoute
 import com.ranjan.data.db.DatabaseFactory
 import com.ranjan.di.appModule
 import io.ktor.http.*
@@ -35,6 +36,7 @@ fun Application.configureKoin() {
 
 fun Application.configureRoutes() {
     checkHealth()
+    checkUpdateRoute()
     authRoutes()
 }
 
