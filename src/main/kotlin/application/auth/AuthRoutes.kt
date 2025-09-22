@@ -13,9 +13,14 @@ fun Application.authRoutes() {
             post("/login") {
                 authController.login(call)
             }
-
             post("/signup") {
                 authController.signup(call)
+            }
+            post("/forgot") {
+                authController.forgot(call)
+            }
+            post("/logout") {
+                authController.logout(call)
             }
         }
     }

@@ -1,13 +1,19 @@
 package com.ranjan
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import com.ranjan.application.auth.authRoutes
 import com.ranjan.application.checkHealth
 import com.ranjan.application.update.checkUpdateRoute
 import com.ranjan.data.db.DatabaseFactory
+import com.ranjan.data.service.JwtConfig
 import com.ranjan.di.appModule
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
@@ -23,6 +29,7 @@ fun Application.module() {
     DatabaseFactory.init()
     configureKoin()
     configureSerialization()
+    configureSecurity()
     configureRoutes()
     configureExceptionHandling()
     configureCORS()
@@ -47,6 +54,25 @@ fun Application.configureSerialization() {
             isLenient = true
             ignoreUnknownKeys = true
         })
+    }
+}
+
+fun Application.configureSecurity() {
+    install(Authentication) {
+        jwt("auth-jwt") {
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC256(JwtConfig.SECRET))
+                    .withAudience(JwtConfig.AUDIENCE)
+                    .withIssuer(JwtConfig.ISSUER)
+                    .build()
+            )
+            validate { credential ->
+                if (credential.payload.getClaim("userId").asString() != null) {
+                    JWTPrincipal(credential.payload)
+                } else null
+            }
+        }
     }
 }
 

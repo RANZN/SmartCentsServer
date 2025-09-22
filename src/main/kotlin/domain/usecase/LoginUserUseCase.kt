@@ -2,14 +2,16 @@ package com.ranjan.domain.usecase
 
 import com.ranjan.domain.model.AuthResponse
 import com.ranjan.domain.model.LoginRequest
-import com.ranjan.domain.service.PasswordCipher
-import com.ranjan.domain.service.TokenProvider
+import com.ranjan.domain.repository.RefreshTokenRepo
 import com.ranjan.domain.repository.UserRepository
+import com.ranjan.domain.service.TokenProvider
+import com.ranjan.domain.service.PasswordCipher
 
 class LoginUserUseCase(
     private val userRepository: UserRepository,
-    private val tokenProvider: TokenProvider,
+    private val refreshTokenRepo: RefreshTokenRepo,
     private val passwordCipher: PasswordCipher,
+    private val tokenProvider: TokenProvider,
 ) {
 
     suspend fun execute(loginRequest: LoginRequest): Result<AuthResponse> = runCatching {
@@ -18,11 +20,10 @@ class LoginUserUseCase(
 
         val isPasswordCorrect = passwordCipher.verifyPassword(loginRequest.password, user.hashedPassword)
 
-        if (isPasswordCorrect) {
-            val token = tokenProvider.createToken(user)
-            AuthResponse(token, user.asResponse())
-        } else {
-            throw SecurityException("Invalid email or password")
-        }
+        if (isPasswordCorrect.not()) throw SecurityException("Invalid email or password")
+
+        val token = tokenProvider.createToken(user)
+        refreshTokenRepo.save(user.userId.toString(), token.refreshToken)
+        AuthResponse(token, user.asResponse())
     }
 }

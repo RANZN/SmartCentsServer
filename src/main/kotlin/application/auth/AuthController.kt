@@ -1,18 +1,26 @@
 package com.ranjan.application.auth
 
 import com.ranjan.domain.model.ErrorResponse
+import com.ranjan.domain.model.ForgotPasswordRequest
 import com.ranjan.domain.model.LoginRequest
+import com.ranjan.domain.model.ResetPasswordRequest
 import com.ranjan.domain.model.SignupRequest
+import com.ranjan.domain.usecase.ForgotPasswordUseCase
 import com.ranjan.domain.usecase.LoginUserUseCase
+import com.ranjan.domain.usecase.LogoutUseCase
 import com.ranjan.domain.usecase.SignUpUserUseCase
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.request.header
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.routing.RoutingCall
 
 class AuthController(
     private val loginUserUseCase: LoginUserUseCase,
     private val signupUserUseCase: SignUpUserUseCase,
+    private val forgotPasswordUseCase: ForgotPasswordUseCase,
+    private val logoutUseCase: LogoutUseCase,
 ) {
 
     suspend fun login(call: ApplicationCall) {
@@ -91,5 +99,47 @@ class AuthController(
                 }
             }
         }
+    }
+
+    suspend fun forgot(call: ApplicationCall) {
+        val request = try {
+            call.receive<ForgotPasswordRequest>()
+        } catch (_: Exception) {
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ErrorResponse("Invalid request format.")
+            )
+            return
+        }
+
+        forgotPasswordUseCase.execute(request.email)
+
+        call.respond(
+            HttpStatusCode.OK,
+            mapOf("message" to "If an account with that email exists, a password reset link has been sent.")
+        )
+    }
+
+    suspend fun resetPassword(call: ApplicationCall) {
+        val request = try {
+            call.receive<ResetPasswordRequest>()
+        } catch (_: Exception) {
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ErrorResponse("Invalid request format.")
+            )
+            return
+        }
+
+
+    }
+
+    suspend fun logout(call: ApplicationCall) {
+        val refreshToken = call.request.header("Authorization")?.removePrefix("Bearer ")
+            ?: return call.respond(HttpStatusCode.BadRequest, "Missing token")
+
+        logoutUseCase.execute(refreshToken) ?: call.respond(HttpStatusCode.Unauthorized, "Invalid token")
+
+        call.respond(HttpStatusCode.OK, "Logged out successfully")
     }
 }

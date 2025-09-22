@@ -7,13 +7,13 @@ import java.util.UUID
 @Serializable
 data class User(
     @Serializable(with = UUIDSerializer::class)
-    val id: UUID,
+    val userId: UUID,
     val name: String,
     val email: String,
     val hashedPassword: String,
 ) {
     fun asResponse() = UserResponse(
-        id = id.toString(),
+        userId = userId.toString(),
         name = name,
         email = email
     )
@@ -21,7 +21,7 @@ data class User(
 
 @Serializable
 data class UserResponse(
-    val id: String,
+    val userId: String,
     val name: String,
     val email: String,
 )

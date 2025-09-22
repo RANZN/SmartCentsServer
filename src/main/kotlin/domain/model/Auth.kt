@@ -28,7 +28,7 @@ data class ResetPasswordRequest(
 
 @Serializable
 data class AuthResponse(
-    val token: String,
+    val token: AuthToken,
     val user: UserResponse
 )
 

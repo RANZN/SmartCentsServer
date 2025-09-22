@@ -3,9 +3,9 @@ package com.ranjan.domain.usecase
 import com.ranjan.domain.model.AuthResponse
 import com.ranjan.domain.model.SignupRequest
 import com.ranjan.domain.model.User
-import com.ranjan.domain.service.PasswordCipher
-import com.ranjan.domain.service.TokenProvider
 import com.ranjan.domain.repository.UserRepository
+import com.ranjan.domain.service.TokenProvider
+import com.ranjan.domain.service.PasswordCipher
 import java.util.UUID
 
 class SignUpUserUseCase(
@@ -26,17 +26,16 @@ class SignUpUserUseCase(
         val hashedPassword = passwordCipher.hashPassword(signUpRequest.password)
 
         val newUser = User(
-            id = UUID.randomUUID(), // Generate the ID here
+            userId = UUID.randomUUID(), // Generate the ID here
             name = signUpRequest.name,
             email = signUpRequest.email,
             hashedPassword = hashedPassword
         )
 
-        val savedUser = userRepository.saveUser(newUser) ?: throw Exception("Failed to save user")
+        val savedUser = userRepository.saveUser(newUser) ?: throw Exception("Failed to create account")
 
         val token = tokenProvider.createToken(savedUser)
-
-        AuthResponse(token = token, user = savedUser.asResponse())
+        AuthResponse(token, user = savedUser.asResponse())
     }
 
 }
