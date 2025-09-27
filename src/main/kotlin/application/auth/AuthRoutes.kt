@@ -1,6 +1,8 @@
 package com.ranjan.application.auth
 
+import com.ranjan.data.service.JwtConfig
 import io.ktor.server.application.Application
+import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
@@ -19,8 +21,10 @@ fun Application.authRoutes() {
             post("/forgot") {
                 authController.forgot(call)
             }
-            post("/logout") {
-                authController.logout(call)
+            authenticate(JwtConfig.NAME) {
+                post("/logout") {
+                    authController.logout(call)
+                }
             }
         }
     }

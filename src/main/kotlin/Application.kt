@@ -3,7 +3,6 @@ package com.ranjan
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.ranjan.application.auth.authRoutes
-import com.ranjan.application.checkHealth
 import com.ranjan.application.update.checkUpdateRoute
 import com.ranjan.data.db.DatabaseFactory
 import com.ranjan.data.service.JwtConfig
@@ -25,6 +24,7 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
+@Suppress("unused")
 fun Application.module() {
     DatabaseFactory.init()
     configureKoin()
@@ -42,7 +42,6 @@ fun Application.configureKoin() {
 }
 
 fun Application.configureRoutes() {
-    checkHealth()
     checkUpdateRoute()
     authRoutes()
 }
@@ -59,7 +58,7 @@ fun Application.configureSerialization() {
 
 fun Application.configureSecurity() {
     install(Authentication) {
-        jwt("auth-jwt") {
+        jwt(JwtConfig.NAME) {
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(JwtConfig.SECRET))
@@ -68,7 +67,7 @@ fun Application.configureSecurity() {
                     .build()
             )
             validate { credential ->
-                if (credential.payload.getClaim("userId").asString() != null) {
+                if (credential.payload.getClaim(JwtConfig.Claims.USER_ID).asString() != null) {
                     JWTPrincipal(credential.payload)
                 } else null
             }

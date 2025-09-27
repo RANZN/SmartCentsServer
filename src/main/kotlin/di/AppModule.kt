@@ -9,8 +9,8 @@ import com.ranjan.domain.repository.RefreshTokenRepo
 import com.ranjan.domain.repository.UserRepository
 import com.ranjan.domain.service.TokenProvider
 import com.ranjan.domain.service.PasswordCipher
-import com.ranjan.domain.usecase.LoginUserUseCase
-import com.ranjan.domain.usecase.SignUpUserUseCase
+import com.ranjan.domain.usecase.auth.LoginUserUseCase
+import com.ranjan.domain.usecase.auth.SignUpUserUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

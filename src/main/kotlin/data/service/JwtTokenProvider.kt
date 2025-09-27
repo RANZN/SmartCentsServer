@@ -10,6 +10,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
 object JwtConfig {
+    const val NAME = "auth-jwt"
     const val SECRET = "your-super-secret-for-jwt"
     const val ISSUER = "your=issuer"
     const val AUDIENCE = "your-audience"

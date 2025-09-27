@@ -1,4 +1,4 @@
-package com.ranjan.domain.usecase
+package com.ranjan.domain.usecase.auth
 
 import com.ranjan.domain.repository.UserRepository
 

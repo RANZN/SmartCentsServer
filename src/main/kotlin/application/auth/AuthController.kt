@@ -5,16 +5,15 @@ import com.ranjan.domain.model.ForgotPasswordRequest
 import com.ranjan.domain.model.LoginRequest
 import com.ranjan.domain.model.ResetPasswordRequest
 import com.ranjan.domain.model.SignupRequest
-import com.ranjan.domain.usecase.ForgotPasswordUseCase
-import com.ranjan.domain.usecase.LoginUserUseCase
-import com.ranjan.domain.usecase.LogoutUseCase
-import com.ranjan.domain.usecase.SignUpUserUseCase
+import com.ranjan.domain.usecase.auth.ForgotPasswordUseCase
+import com.ranjan.domain.usecase.auth.LoginUserUseCase
+import com.ranjan.domain.usecase.auth.LogoutUseCase
+import com.ranjan.domain.usecase.auth.SignUpUserUseCase
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.header
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.RoutingCall
 
 class AuthController(
     private val loginUserUseCase: LoginUserUseCase,
@@ -138,8 +137,12 @@ class AuthController(
         val refreshToken = call.request.header("Authorization")?.removePrefix("Bearer ")
             ?: return call.respond(HttpStatusCode.BadRequest, "Missing token")
 
-        logoutUseCase.execute(refreshToken) ?: call.respond(HttpStatusCode.Unauthorized, "Invalid token")
+        val response = logoutUseCase.execute(refreshToken)
 
-        call.respond(HttpStatusCode.OK, "Logged out successfully")
+        response.onSuccess {
+            call.respond(HttpStatusCode.OK, "Logged out successfully")
+        }.onFailure {
+            call.respond(HttpStatusCode.Unauthorized, "Invalid token")
+        }
     }
 }
